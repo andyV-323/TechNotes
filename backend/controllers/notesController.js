@@ -20,7 +20,11 @@ const getAllNotes = asyncHandler(async (req, res) => {
   const notesWithUser = await Promise.all(
     notes.map(async (note) => {
       const user = await User.findById(note.user).lean().exec();
-      return { ...note, username: user.username };
+      if (user) {
+        return { ...note, username: user.username };
+      } else {
+        return { ...note, username: 'Unknown User' }; // Provide a default value or handle the case when user is not found
+      }
     })
   );
 
